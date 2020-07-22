@@ -59,6 +59,15 @@ int udp_accept(int fd, struct User *user) {
         sendto(fd, (void *)&response, sizeof(response), 0, (struct sockaddr *)&client, len);
         return -1;
     }
+
+    if (check_online(&request)) {
+        response.type = 1;
+        strcpy(response.msg, "You have already login!");
+        sendto(fd, (void *)&response, sizeof(response), 0, (struct sockaddr *)&client, len);
+        return -1;
+    }
+    
+
     if ((new_fd = udp_connect(&client)) < 0) {
         return -1;
     }
@@ -93,6 +102,8 @@ void add_to_sub_reactor(struct User *user) {
     if (user->team) pthread_mutex_unlock(&bmutex);
     else pthread_mutex_unlock(&rmutex);
 
+    DBG("Add to sub reactor %s\n", team[sub].name);
+    
     if (user->team) {
         add_event_ptr(bepollfd, team[sub].fd, EPOLLIN | EPOLLET, &team[sub]);
     } else {
@@ -102,9 +113,8 @@ void add_to_sub_reactor(struct User *user) {
 
 int check_online(struct LogRequest *request) {
     for (int i = 0; i < MAX; i++) {
-        if (strcmp(rteam[i].name, request->name) || strcmp(bteam[i].name, request->name)) {
-            return 1;
-        }
+        if (rteam[i].online == 1 && !strcmp(rteam[i].name, request->name)) return 1;
+        if (bteam[i].online == 1 && !strcmp(bteam[i].name, request->name)) return 1;
     }
     return 0;
 }

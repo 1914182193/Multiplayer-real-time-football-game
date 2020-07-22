@@ -36,14 +36,27 @@
 #include <unistd.h>
 #include <string.h>
 #include <sys/epoll.h>
+#include <ncurses.h>
 
 #include "common.h"
 #include "datatype.h"
 #include "udp_epoll.h"
 #include "thread_pool.h"
 #include "sub_reactor.h"
+#include "color.h"
+#include "game_ui.h"
+#include "heart_beat.h"
+#include "server_re_draw.h"
+#include "ball_status.h"
+
 
 #define MAX 20
 #define NWORKER 5
+
+#ifdef _D
+#define DBG(fmt, args...) printf(fmt, ##args)
+#else 
+#define DBG(fmt, args...)
+#endif
 
 #endif
