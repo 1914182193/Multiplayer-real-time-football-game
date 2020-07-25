@@ -9,7 +9,7 @@
 
 extern struct Map court;
 extern struct User *rteam, *bteam;
-extern WINDOW *Football, *Football_t, *Message;
+extern WINDOW *Football, *Football_t, *Message, *Score;
 extern struct BallStatus ball_status;
 extern struct Bpoint ball;
 extern struct Score score;
@@ -39,11 +39,11 @@ void re_draw_ball() {
                 if (ball.x >= court.width - 1) {
                     if (ball.y >= court.height / 2 - 3 && ball.y <= court.height / 2 + 3) {
                         score.red++;
-                        ball.x = court.width - 3;
+                        ball.x = court.width - 5;
                         ball. y = court.height / 2;
                         struct FootBallMsg msg;
                         msg.type = FT_WALL;
-                        sprintf(msg.msg, "%s of %s team, get 1 score", ball_status.name, ball_status.by_team ? "blue" : "red");
+                        sprintf(msg.msg, "%s of %s team, get 1 score. RED TEAM %d : %d BLUE TEAM", ball_status.name, ball_status.by_team ? "blue" : "red", score.red, score.blue);
                         send_all(&msg);
                     }
                     ball.x = court.width - 1;
@@ -51,11 +51,11 @@ void re_draw_ball() {
                 if (ball.x <= 0) {
                     if (ball.y >= court.height / 2 - 3 && ball.y <= court.height / 2 + 3) {
                         score.blue++;
-                        ball.x = 2;
+                        ball.x = 5;
                         ball.y = court.height / 2;
                         struct FootBallMsg msg;
                         msg.type = FT_WALL;
-                        sprintf(msg.msg, "%s of %s team, get 1 score", ball_status.name, ball_status.by_team ? "blue" : "red");
+                        sprintf(msg.msg, "%s of %s team, get 1 score. RED TEAM %d : %d BLUE TEAM", ball_status.name, ball_status.by_team ? "blue" : "red", score.red, score.blue);
                         send_all(&msg);
                     }
                     ball.x = 0;
@@ -69,9 +69,9 @@ void re_draw_ball() {
     }
     w_gotoxy_putc(Football, (int)ball.x, (int)ball.y, 'o');
     if (ball_status.by_team) {
-        wattron(Football_t, COLOR_PAIR(6));
+        wattron(Football, COLOR_PAIR(6));
     } else {
-        wattron(Football_t, COLOR_PAIR(2));
+        wattron(Football, COLOR_PAIR(2));
     }
     w_gotoxy_putc(Football, (int)ball.x + 1, (int)ball.y, '`');
     wattron(Football_t, COLOR_PAIR(3));
