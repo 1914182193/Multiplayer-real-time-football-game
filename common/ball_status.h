@@ -9,5 +9,6 @@
 #define _BALL_STATUS_H
 
 int can_kick(struct Point *loc, int strength);
+int can_acess(struct Point *loc);
 
 #endif
